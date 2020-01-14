@@ -75,7 +75,7 @@ public class HerokuApplication {
     }
   }
  @RequestMapping("/TICKAPI")
-  String db(Map<String, Object> model) {
+  String TICKAPI(JSONArray model) {
     try (Connection connection = dataSource.getConnection()) {
       Statement stmt = connection.createStatement();
       stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
@@ -87,8 +87,8 @@ public class HerokuApplication {
         output.add("Read from DB: " + rs.getTimestamp("tick"));
       }
 
-      model.put("records", convert(rs));
-      return "db";
+      model= convert(rs);
+      return "TICKAPI";
     } catch (Exception e) {
       model.put("message", e.getMessage());
       return "error";
