@@ -25,10 +25,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.json.JSONArray;
+
+/*import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
-
+*/
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -78,7 +79,7 @@ public class HerokuApplication {
     }
   }
  @RequestMapping("/TICKAPI")
-  String TICKAPI(JSONArray model) {
+  String TICKAPI(Map<String, Object> model) {
     try (Connection connection = dataSource.getConnection()) {
       Statement stmt = connection.createStatement();
       stmt.executeUpdate("CREATE TABLE IF NOT EXISTS ticks (tick timestamp)");
@@ -90,13 +91,15 @@ public class HerokuApplication {
         output.add("Read from DB: " + rs.getTimestamp("tick"));
       }
 
-      model= convert(rs);
+      //model= convert(rs);
+      model.put("records", output);
       return "TICKAPI";
     } catch (Exception e) {
       model.put("message", e.getMessage());
       return "error";
     }
   }
+  /*
 public static JSONArray convert( ResultSet rs )
     throws SQLException, JSONException
   {
@@ -159,6 +162,7 @@ public static JSONArray convert( ResultSet rs )
 
     return json;
   }
+  */
   @Bean
   public DataSource dataSource() throws SQLException {
     if (dbUrl == null || dbUrl.isEmpty()) {
